@@ -32,8 +32,25 @@ import lombok.NoArgsConstructor;
 //    "South Indian"
 //  ]
 // }
-
+@Data
 public class Restaurant {
-
+    @NotNull
+    private String restaurantId;
+    @NotNull
+    private String name;
+    @NotNull
+    private String city;
+    @NotNull
+    private String imageUrl;
+    @NotNull
+    private double latitude;
+    @NotNull
+    private double longitude;
+    @NotNull
+    private String opensAt;
+    @NotNull
+    private String closesAt;
+    @NotNull
+    private String attributes[];
 }
 
