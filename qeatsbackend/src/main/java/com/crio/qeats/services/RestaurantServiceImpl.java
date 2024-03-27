@@ -44,10 +44,10 @@ public class RestaurantServiceImpl implements RestaurantService {
   public GetRestaurantsResponse findAllRestaurantsCloseBy(
       GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
 
-    int hours = currentTime.getHour();
     GetRestaurantsResponse getRestaurantsResponse = null;
-    if ((hours >= 8 && hours <= 10) || (hours >= 13 && hours <= 14) 
-        || (hours >= 19 && hours <= 21)) {
+    if ((currentTime.isAfter(LocalTime.of(7, 59, 59)) && currentTime.isBefore(LocalTime.of(10, 00, 01)))
+    || (currentTime.isAfter(LocalTime.of(12, 59, 59)) && currentTime.isBefore(LocalTime.of(14, 00, 01)))
+    || (currentTime.isAfter(LocalTime.of(18, 59, 59)) && currentTime.isBefore(LocalTime.of(21, 00, 01)))) {
       getRestaurantsResponse = 
       new GetRestaurantsResponse(restaurantRepositoryService.findAllRestaurantsCloseBy(
       getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
