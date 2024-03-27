@@ -46,7 +46,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     int hours = currentTime.getHour();
     GetRestaurantsResponse getRestaurantsResponse = null;
-    if ((hours >= 8 && hours < 10) || (hours >= 13 && hours < 14) || (hours >= 19 && hours < 21)) {
+    if ((hours >= 8 && hours <= 10) || (hours >= 13 && hours <= 14) 
+        || (hours >= 19 && hours <= 21)) {
       getRestaurantsResponse = 
       new GetRestaurantsResponse(restaurantRepositoryService.findAllRestaurantsCloseBy(
       getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),

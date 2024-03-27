@@ -43,7 +43,7 @@ public class RestaurantController {
 
 
 
-  @GetMapping(RESTAURANTS_API)
+  @GetMapping(RESTAURANT_API_ENDPOINT + RESTAURANTS_API)
   public ResponseEntity<GetRestaurantsResponse> getRestaurants(@Valid 
       GetRestaurantsRequest getRestaurantsRequest) {
 

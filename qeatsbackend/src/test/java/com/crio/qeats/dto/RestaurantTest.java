@@ -20,7 +20,6 @@ class RestaurantTest {
   public void serializeAndDeserializeRestaurantJson() throws IOException, JSONException {
     final String jsonString =
         "{\n"
-            + "  \"id\": 1,\n"
             + "  \"restaurantId\": \"10\",\n"
             + "  \"name\": \"A2B\",\n"
             + "  \"city\": \"Hsr Layout\",\n"

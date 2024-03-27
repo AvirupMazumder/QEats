@@ -7,11 +7,12 @@
 
 package com.crio.qeats.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-
 
 
 // TODO: CRIO_TASK_MODULE_SERIALIZATION
@@ -36,9 +37,9 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class Restaurant {
-    
-    
-  private int id;
+  
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Integer id;
   private String restaurantId;
   private String name;
   private String city;
