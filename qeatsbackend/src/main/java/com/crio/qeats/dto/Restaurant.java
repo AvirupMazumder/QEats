@@ -7,13 +7,12 @@
 
 package com.crio.qeats.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
-import java.util.List;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
+
+
 
 // TODO: CRIO_TASK_MODULE_SERIALIZATION
 //  Implement Restaurant class.
@@ -33,24 +32,22 @@ import lombok.NoArgsConstructor;
 //  ]
 // }
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Component
 public class Restaurant {
-    @NotNull
-    private String restaurantId;
-    @NotNull
-    private String name;
-    @NotNull
-    private String city;
-    @NotNull
-    private String imageUrl;
-    @NotNull
-    private double latitude;
-    @NotNull
-    private double longitude;
-    @NotNull
-    private String opensAt;
-    @NotNull
-    private String closesAt;
-    @NotNull
-    private String attributes[];
+    
+    
+  private int id;
+  private String restaurantId;
+  private String name;
+  private String city;
+  private String imageUrl;
+  private double latitude;
+  private double longitude;
+  private String opensAt;
+  private String closesAt;
+  private String[] attributes;
+    
 }
 
