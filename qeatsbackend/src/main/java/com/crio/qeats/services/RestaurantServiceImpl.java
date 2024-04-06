@@ -34,8 +34,13 @@ public class RestaurantServiceImpl implements RestaurantService {
   
   private final Double normalHoursServingRadiusInKms = 5.0;
 
-  @Autowired
+  
   private RestaurantRepositoryService restaurantRepositoryService;
+
+  @Autowired
+  public RestaurantServiceImpl(RestaurantRepositoryService restaurantRepositoryService) {
+    this.restaurantRepositoryService = restaurantRepositoryService;
+  }
 
 
   // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI - Implement findAllRestaurantsCloseby.
@@ -45,9 +50,12 @@ public class RestaurantServiceImpl implements RestaurantService {
       GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
 
     GetRestaurantsResponse getRestaurantsResponse = null;
-    if ((currentTime.isAfter(LocalTime.of(7, 59, 59)) && currentTime.isBefore(LocalTime.of(10, 00, 01)))
-    || (currentTime.isAfter(LocalTime.of(12, 59, 59)) && currentTime.isBefore(LocalTime.of(14, 00, 01)))
-    || (currentTime.isAfter(LocalTime.of(18, 59, 59)) && currentTime.isBefore(LocalTime.of(21, 00, 01)))) {
+    if ((currentTime.isAfter(LocalTime.of(7, 59, 59)) 
+        && currentTime.isBefore(LocalTime.of(10, 00, 01)))
+        || (currentTime.isAfter(LocalTime.of(12, 59, 59)) 
+        && currentTime.isBefore(LocalTime.of(14, 00, 01)))
+        || (currentTime.isAfter(LocalTime.of(18, 59, 59)) 
+        && currentTime.isBefore(LocalTime.of(21, 00, 01)))) {
       getRestaurantsResponse = 
       new GetRestaurantsResponse(restaurantRepositoryService.findAllRestaurantsCloseBy(
       getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),

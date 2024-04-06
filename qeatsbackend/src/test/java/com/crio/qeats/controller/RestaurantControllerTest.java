@@ -33,6 +33,7 @@ import com.crio.qeats.QEatsApplication;
 import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.services.RestaurantService;
+import com.crio.qeats.services.RestaurantServiceImpl;
 import com.crio.qeats.utils.FixtureHelpers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,9 +46,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -83,6 +86,7 @@ public class RestaurantControllerTest {
   private static final String FIXTURES = "fixtures/exchanges";
   private ObjectMapper objectMapper;
 
+  
   private MockMvc mvc;
 
   @MockBean
