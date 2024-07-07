@@ -9,9 +9,9 @@ package com.crio.qeats.exchanges;
 import com.crio.qeats.dto.Restaurant;
 
 import java.util.List;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +54,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
+@NoArgsConstructor
 public class GetRestaurantsResponse {
     
   private List<Restaurant> restaurants;
@@ -63,13 +64,13 @@ public class GetRestaurantsResponse {
     this.restaurants = restraurants;
   }
 
-  // public void removeNonASCIICharacters() {
-  //   if (restaurants != null) {
-  //       for (Restaurant restaurant : restaurants) {
-  //           restaurant.removeNonASCIICharacters();
-  //       }
-  //   }
-  // }
+  public void removeNonASCIICharacters() {
+    if (restaurants != null) {
+        for (Restaurant restaurant : restaurants) {
+            restaurant.removeNonASCIICharacters();
+        }
+    }
+  }
 }
 
 // }
