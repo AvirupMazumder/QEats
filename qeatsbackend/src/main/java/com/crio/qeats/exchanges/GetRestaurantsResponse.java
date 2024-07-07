@@ -62,6 +62,14 @@ public class GetRestaurantsResponse {
   public GetRestaurantsResponse(List<Restaurant> restraurants) {
     this.restaurants = restraurants;
   }
+
+  public void removeNonASCIICharacters() {
+    if (restaurants != null) {
+        for (Restaurant restaurant : restaurants) {
+            restaurant.removeNonASCIICharacters();
+        }
+    }
+  }
 }
 
 // }

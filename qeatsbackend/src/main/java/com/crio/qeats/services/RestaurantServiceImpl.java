@@ -68,6 +68,8 @@ public class RestaurantServiceImpl implements RestaurantService {
          getRestaurantsRequest.getLatitude(),getRestaurantsRequest.getLongitude(), 
          currentTime, normalHoursServingRadiusInKms));
     }
+
+    getRestaurantsResponse.removeNonASCIICharacters();
     return getRestaurantsResponse;
   }
 
