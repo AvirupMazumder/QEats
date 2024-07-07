@@ -51,34 +51,34 @@ public class Restaurant {
   private String closesAt;
   private String[] attributes;
 
-  public void removeNonASCIICharacters() {
-    //this.id = removeNonASCII(this.id);
-    //this.restaurantId = removeNonASCII(this.restaurantId);
-    this.name = removeNonASCII(this.name);
-    //this.city = removeNonASCII(this.city);
-    //this.imageUrl = removeNonASCII(this.imageUrl);
-    //this.opensAt = removeNonASCII(this.opensAt);
-    //this.closesAt = removeNonASCII(this.closesAt);
-    if (attributes != null) {
-        this.attributes = removeNonASCII(this.attributes);
-    }
-  }
+  // public void removeNonASCIICharacters() {
+  //   //this.id = removeNonASCII(this.id);
+  //   //this.restaurantId = removeNonASCII(this.restaurantId);
+  //   this.name = removeNonASCII(this.name);
+  //   //this.city = removeNonASCII(this.city);
+  //   //this.imageUrl = removeNonASCII(this.imageUrl);
+  //   //this.opensAt = removeNonASCII(this.opensAt);
+  //   //this.closesAt = removeNonASCII(this.closesAt);
+  //   if (attributes != null) {
+  //       this.attributes = removeNonASCII(this.attributes);
+  //   }
+  // }
 
-  private String removeNonASCII(String str) {
-    if (str == null) {
-        return null;
-    }
-    // Remove non-ASCII characters and replace with whitespace
-    return str.replaceAll("[^\\x00-\\x7F]", "?");
-  }
+  // private String removeNonASCII(String str) {
+  //   if (str == null) {
+  //       return null;
+  //   }
+  //   // Remove non-ASCII characters and replace with whitespace
+  //   return str.replaceAll("[^\\x00-\\x7F]", "?");
+  // }
 
-  private String[] removeNonASCII(String[] arr) {
-    // Remove non-ASCII characters from each element in the array
-    return List.of(arr)
-            .stream()
-            .map(this::removeNonASCII)
-            .toArray(String[]::new);
-  }
+  // private String[] removeNonASCII(String[] arr) {
+  //   // Remove non-ASCII characters from each element in the array
+  //   return List.of(arr)
+  //           .stream()
+  //           .map(this::removeNonASCII)
+  //           .toArray(String[]::new);
+  // }
     
 }
 

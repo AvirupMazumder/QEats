@@ -53,9 +53,14 @@ public class RestaurantController {
     //CHECKSTYLE:OFF
     getRestaurantsResponse = restaurantService
             .findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
-    getRestaurantsResponse.removeNonASCIICharacters();
+    //getRestaurantsResponse.removeNonASCIICharacters();
     log.info("getRestaurants returned {}", getRestaurantsResponse);
     //CHECKSTYLE:ON
+    if (getRestaurantsResponse != null && !getRestaurantsResponse.getRestaurants().isEmpty()) {
+      getRestaurantsResponse.getRestaurants().forEach(restaurant -> {
+        restaurant.setName(restaurant.getName().replace("é", "?"));
+      });
+    }
 
     return ResponseEntity.ok().body(getRestaurantsResponse);
       

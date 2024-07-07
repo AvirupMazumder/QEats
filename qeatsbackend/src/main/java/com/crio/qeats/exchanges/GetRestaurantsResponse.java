@@ -63,13 +63,13 @@ public class GetRestaurantsResponse {
     this.restaurants = restraurants;
   }
 
-  public void removeNonASCIICharacters() {
-    if (restaurants != null) {
-        for (Restaurant restaurant : restaurants) {
-            restaurant.removeNonASCIICharacters();
-        }
-    }
-  }
+  // public void removeNonASCIICharacters() {
+  //   if (restaurants != null) {
+  //       for (Restaurant restaurant : restaurants) {
+  //           restaurant.removeNonASCIICharacters();
+  //       }
+  //   }
+  // }
 }
 
 // }
