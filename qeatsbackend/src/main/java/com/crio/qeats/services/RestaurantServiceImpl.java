@@ -49,6 +49,8 @@ public class RestaurantServiceImpl implements RestaurantService {
   public GetRestaurantsResponse findAllRestaurantsCloseBy(
       GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
 
+    log.info("Fetching all Restraurants near latitude " + getRestaurantsRequest.getLatitude() + " and longitude " + getRestaurantsRequest.getLongitude());
+
     GetRestaurantsResponse getRestaurantsResponse = null;
     if ((currentTime.isAfter(LocalTime.of(7, 59, 59)) 
         && currentTime.isBefore(LocalTime.of(10, 00, 01)))

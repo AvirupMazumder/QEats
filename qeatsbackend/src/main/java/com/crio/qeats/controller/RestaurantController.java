@@ -59,7 +59,13 @@ public class RestaurantController {
     return ResponseEntity.ok().body(getRestaurantsResponse);
       
   }
-
+/*
+  @GetMapping(RESTAURANT_API_ENDPOINT + RESTAURANT_API_ENDPOINT)
+  public ResponseEntity<String> startQEatsApp() {
+    log.info("Successfully logged in to QEats App");
+    return ResponseEntity.ok().body("Logged Successfully");
+  }
+  */
   // TIP(MODULE_MENUAPI): Model Implementation for getting menu given a restaurantId.
   // Get the Menu for the given restaurantId
   // API URI: /qeats/v1/menu?restaurantId=11

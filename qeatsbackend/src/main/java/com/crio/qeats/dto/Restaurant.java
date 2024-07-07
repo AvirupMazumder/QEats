@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 public class Restaurant {
   
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  private Integer id;
+  private String id;
   private String restaurantId;
   private String name;
   private String city;

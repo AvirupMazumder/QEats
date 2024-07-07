@@ -7,6 +7,7 @@
 package com.crio.qeats.repositoryservices;
 
 import ch.hsr.geohash.GeoHash;
+import lombok.extern.log4j.Log4j2;
 import com.crio.qeats.dto.Restaurant;
 import com.crio.qeats.globals.GlobalConstants;
 import com.crio.qeats.models.RestaurantEntity;
@@ -41,6 +42,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@Log4j2
 public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryService {
 
   @Autowired
@@ -86,6 +88,7 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
       }
             
     }
+    log.debug("Resturning list of restaurants of size: {} ",restaurants.size());
     return restaurants;
  
   }
