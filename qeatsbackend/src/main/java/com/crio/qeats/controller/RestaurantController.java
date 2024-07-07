@@ -53,6 +53,7 @@ public class RestaurantController {
     //CHECKSTYLE:OFF
     getRestaurantsResponse = restaurantService
             .findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
+    getRestaurantsResponse.removeNonASCIICharacters();
     log.info("getRestaurants returned {}", getRestaurantsResponse);
     //CHECKSTYLE:ON
 

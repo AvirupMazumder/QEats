@@ -69,7 +69,7 @@ public class RestaurantServiceImpl implements RestaurantService {
          currentTime, normalHoursServingRadiusInKms));
     }
 
-    getRestaurantsResponse.removeNonASCIICharacters();
+    //getRestaurantsResponse.removeNonASCIICharacters();
     return getRestaurantsResponse;
   }
 
