@@ -69,7 +69,7 @@ public class Restaurant {
         return null;
     }
     // Remove non-ASCII characters and replace with whitespace
-    return str.replaceAll("[^\\x00-\\x7F]", " ");
+    return str.replaceAll("[^\\x00-\\x7F]", "?");
   }
 
   private String[] removeNonASCII(String[] arr) {
