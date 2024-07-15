@@ -78,14 +78,17 @@ dependencies {
     // 2. Geohash (Use https://github.com/kungfoo/geohash-java)
 
     // Jedis - Java Redis client
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'redis.clients:jedis:3.7.0'
+    //implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation "org.springframework.data:spring-data-redis:2.0.10.RELEASE"
+    //implementation 'redis.clients:jedis:3.7.0'
+    compile "redis.clients:jedis:2.9.0"
     //testImplementation 'com.github.kstyrc:embedded-redis:0.7'
 
     // Geohash-Java
-    implementation 'ch.hsr:geohash:1.3.0'
+    //implementation 'ch.hsr:geohash:1.3.0'
 
     compile "ch.hsr:geohash:1.3.0"
+    
 
 
 

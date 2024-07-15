@@ -101,7 +101,7 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
         try {
           Jedis jedis = redisConfiguration.getJedisPool().getResource();
           String jsonData = objectMapper.writeValueAsString(restaurants);
-          jedis.setex(redisKey, (long)RedisConfiguration.REDIS_ENTRY_EXPIRY_IN_SECONDS , jsonData);
+          jedis.setex(redisKey, RedisConfiguration.REDIS_ENTRY_EXPIRY_IN_SECONDS , jsonData);
           log.info("Cache miss. Caching list of restaurants of size: {}", restaurants.size());
         } catch (JsonProcessingException e) {
           log.error("Error converting list of restaurants to JSON: ", e);
