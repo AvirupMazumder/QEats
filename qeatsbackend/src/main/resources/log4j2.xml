@@ -8,7 +8,7 @@
     </Console>
 
     <File append="true"
-      fileName="${env:HOME}/.gradle/daemon/runlogs/qeats_analysis_app.log"
+      fileName="${env:HOME}/workspace/mazumderavirup1999-ME_QEATS_V2/qeats_analysis_app.log"
       ignoreExceptions="false"
       name="LogFileAppender">
       <JsonLayout compact="true" eventEol="true" includeStacktrace="true">
@@ -17,9 +17,25 @@
     </File>
   </Appenders>
   <Loggers>
-    <Root level="WARN">
+    <Root level="INFO">
       <AppenderRef ref="Console"/>
       <AppenderRef ref="LogFileAppender"/>
     </Root>
+    <Logger name="com.crio.qeats.configs" level="INFO" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="LogFileAppender"/>
+    </Logger>
+    <Logger name="com.crio.qeats.controller" level="INFO" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="LogFileAppender"/>
+    </Logger>
+    <Logger name="com.crio.qeats.repositoryservices" level="INFO" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="LogFileAppender"/>
+    </Logger>
+    <Logger name="com.crio.qeats.services" level="INFO" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="LogFileAppender"/>
+    </Logger>
   </Loggers>
 </Configuration>

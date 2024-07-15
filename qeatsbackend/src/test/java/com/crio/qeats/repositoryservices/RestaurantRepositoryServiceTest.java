@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.crio.qeats.QEatsApplication;
+import com.crio.qeats.configs.RedisConfiguration;
 import com.crio.qeats.dto.Restaurant;
 import com.crio.qeats.models.RestaurantEntity;
 import com.crio.qeats.repositories.RestaurantRepository;
@@ -59,6 +60,8 @@ public class RestaurantRepositoryServiceTest {
   private ObjectMapper objectMapper;
   @Autowired
   private Provider<ModelMapper> modelMapperProvider;
+  @Autowired
+  private RedisConfiguration redisConfiguration;
 
   @MockBean
   private RestaurantRepository restaurantRepository;
@@ -69,6 +72,11 @@ public class RestaurantRepositoryServiceTest {
 
   private RedisServer server = null;
 
+  @BeforeEach
+  public void setupRedisServer() throws IOException {
+    System.out.println("Redis port = " + redisPort);
+    redisConfiguration.setRedisPort(redisPort);
+  }
 
 
   @BeforeEach
@@ -83,6 +91,7 @@ public class RestaurantRepositoryServiceTest {
   @AfterEach
   void teardown() {
     mongoTemplate.dropCollection("restaurants");
+    redisConfiguration.destroyCache();
   }
 
   @Test

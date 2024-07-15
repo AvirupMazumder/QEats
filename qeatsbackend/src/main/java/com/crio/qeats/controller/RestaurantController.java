@@ -9,10 +9,12 @@ package com.crio.qeats.controller;
 import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.services.RestaurantService;
+import java.net.SocketException;
 import java.time.LocalTime;
 import javax.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,15 +53,21 @@ public class RestaurantController {
     GetRestaurantsResponse getRestaurantsResponse;
 
     //CHECKSTYLE:OFF
-    getRestaurantsResponse = restaurantService
-            .findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
-    
-    log.info("getRestaurants returned {}", getRestaurantsResponse);
-    //CHECKSTYLE:ON
-    
-    getRestaurantsResponse.removeNonASCIICharacters();
+    try {
+      getRestaurantsResponse = restaurantService
+              .findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
+      
+      log.info("getRestaurants returned {}", getRestaurantsResponse);
+      //CHECKSTYLE:ON
+      
+      getRestaurantsResponse.removeNonASCIICharacters();
 
-    return ResponseEntity.ok().body(getRestaurantsResponse);
+      return ResponseEntity.ok().body(getRestaurantsResponse);
+    } catch (Exception e) {
+      log.error("Exception occurred while processing the request: {}", e.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .build();
+    }
       
   }
 /*

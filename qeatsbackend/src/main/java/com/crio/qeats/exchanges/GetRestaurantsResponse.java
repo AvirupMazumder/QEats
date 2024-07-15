@@ -7,7 +7,6 @@
 package com.crio.qeats.exchanges;
 
 import com.crio.qeats.dto.Restaurant;
-
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;

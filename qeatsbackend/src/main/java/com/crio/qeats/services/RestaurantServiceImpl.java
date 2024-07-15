@@ -11,6 +11,7 @@ import com.crio.qeats.dto.Restaurant;
 import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.repositoryservices.RestaurantRepositoryService;
+import java.net.SocketException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,10 +59,15 @@ public class RestaurantServiceImpl implements RestaurantService {
         && currentTime.isBefore(LocalTime.of(14, 00, 01)))
         || (currentTime.isAfter(LocalTime.of(18, 59, 59)) 
         && currentTime.isBefore(LocalTime.of(21, 00, 01)))) {
+
+      long startTimeInMillis = System.currentTimeMillis();
       getRestaurantsResponse = 
       new GetRestaurantsResponse(restaurantRepositoryService.findAllRestaurantsCloseBy(
       getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
       currentTime, peakHoursServingRadiusInKms));
+      long endTimeInMillis = System.currentTimeMillis();
+
+      log.info("Your function took :" + (endTimeInMillis - startTimeInMillis));
     } else {
       getRestaurantsResponse = 
       new GetRestaurantsResponse(restaurantRepositoryService.findAllRestaurantsCloseBy(

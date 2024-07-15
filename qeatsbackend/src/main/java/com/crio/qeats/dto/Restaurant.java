@@ -52,13 +52,7 @@ public class Restaurant {
   private String[] attributes;
 
   public void removeNonASCIICharacters() {
-    //this.id = removeNonASCII(this.id);
-    //this.restaurantId = removeNonASCII(this.restaurantId);
     this.name = removeNonASCII(this.name);
-    //this.city = removeNonASCII(this.city);
-    //this.imageUrl = removeNonASCII(this.imageUrl);
-    //this.opensAt = removeNonASCII(this.opensAt);
-    //this.closesAt = removeNonASCII(this.closesAt);
     if (attributes != null) {
         this.attributes = removeNonASCII(this.attributes);
     }
