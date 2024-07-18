@@ -21,6 +21,11 @@ import org.springframework.stereotype.Repository;
 public interface RestaurantRepository extends MongoRepository<RestaurantEntity, String> {
 
   // List<RestaurantEntity> findByLocationNear(GeoLocation point, Distance distance);
+  @Query("{ 'restaurantId' : ?0 }")
+  Optional<RestaurantEntity> findRestaurantByRestaurantId(String restaurantId);
+
+  @Query("{ 'name' : ?0 }")
+  Optional<List<RestaurantEntity>> findRestaurantsByNameExact(String name);
 
 }
 

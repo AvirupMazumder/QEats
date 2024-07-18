@@ -7,11 +7,16 @@
 package com.crio.qeats.repositoryservices;
 
 import ch.hsr.geohash.GeoHash;
-import lombok.extern.log4j.Log4j2;
 import com.crio.qeats.configs.RedisConfiguration;
+import lombok.extern.log4j.Log4j2;
+import com.crio.qeats.dto.Item;
 import com.crio.qeats.dto.Restaurant;
 import com.crio.qeats.globals.GlobalConstants;
+import com.crio.qeats.models.ItemEntity;
+import com.crio.qeats.models.MenuEntity;
 import com.crio.qeats.models.RestaurantEntity;
+import com.crio.qeats.repositories.ItemRepository;
+import com.crio.qeats.repositories.MenuRepository;
 import com.crio.qeats.repositories.RestaurantRepository;
 import com.crio.qeats.utils.GeoLocation;
 import com.crio.qeats.utils.GeoUtils;
@@ -51,12 +56,16 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
   private RestaurantRepository restaurantRepository;
 
   @Autowired
+  private ItemRepository itemRepository;
+
+  @Autowired
+  private MenuRepository menuRepository;
+
+  @Autowired
   private RedisConfiguration redisConfiguration;
 
   @Autowired
   private MongoTemplate mongoTemplate;
-
-  
 
   @Autowired
   private Provider<ModelMapper> modelMapperProvider;
@@ -116,7 +125,7 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
     List<Restaurant> restaurants = new ArrayList<Restaurant>();
     ModelMapper modelMapper =  modelMapperProvider.get();
     
-        List<RestaurantEntity> restaurantEntities  =  restaurantRepository.findAll();
+    List<RestaurantEntity> restaurantEntities  =  restaurantRepository.findAll();
     for (RestaurantEntity  restaurantEntity :  restaurantEntities) {
       if (isOpenNow(currentTime, restaurantEntity)) {
        
@@ -157,6 +166,141 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
       log.info("Error accessing Redis: ", e);
     }
     return restaurants;
+  
+  }
+
+  // TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+  // Objective:
+  // Find restaurants whose names have an exact or partial match with the search query.
+  @Override
+  public List<Restaurant> findRestaurantsByName(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    List<Restaurant> restaurants = new ArrayList<Restaurant>();
+    ModelMapper modelMapper =  modelMapperProvider.get();
+        
+    List<RestaurantEntity> restaurantEntities  =  restaurantRepository.findAll();
+    for (RestaurantEntity  restaurantEntity :  restaurantEntities) {
+      if (isOpenNow(currentTime, restaurantEntity)) {
+         
+        if (isRestaurantCloseByAndOpen(restaurantEntity, currentTime, 
+            latitude, longitude, servingRadiusInKms) && restaurantEntity.getName().contains(searchString)) {
+  
+          restaurants.add(modelMapper.map(restaurantEntity, Restaurant.class));
+          }
+        }
+              
+    }
+
+     return restaurants;
+  }
+
+
+  // TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+  // Objective:
+  // Find restaurants whose attributes (cuisines) intersect with the search query.
+  @Override
+  public List<Restaurant> findRestaurantsByAttributes(
+      Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+    List<Restaurant> restaurants = new ArrayList<Restaurant>();
+    ModelMapper modelMapper =  modelMapperProvider.get();
+            
+    List<RestaurantEntity> restaurantEntities  =  restaurantRepository.findAll();
+    for (RestaurantEntity  restaurantEntity :  restaurantEntities) {
+      if (isOpenNow(currentTime, restaurantEntity)) {
+         
+        if (isRestaurantCloseByAndOpen(restaurantEntity, currentTime, 
+            latitude, longitude, servingRadiusInKms)) {
+          List<String> attributes = restaurantEntity.getAttributes();
+          for(String attribute : attributes) {
+            if(attribute.contains(searchString)) {
+              restaurants.add(modelMapper.map(restaurantEntity,Restaurant.class));
+              break;
+            }
+          }
+
+        }
+      }
+        
+    }
+     return restaurants;
+  }
+
+
+
+  // TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+  // Objective:
+  // Find restaurants which serve food items whose names form a complete or partial match
+  // with the search query.
+
+  @Override
+  public List<Restaurant> findRestaurantsByItemName(
+      Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+        List<Restaurant> restaurants = new ArrayList<>();
+        ModelMapper modelMapper =  modelMapperProvider.get();
+        List<String> itemIdList = new ArrayList<String>();
+            
+        List<ItemEntity> itemEntities  =  itemRepository.findAll();
+        for (ItemEntity  itemEntity :  itemEntities) {
+          if(itemEntity.getName().contains(searchString)) {
+            //items.add(modelMapper.map(itemEntity, Item.class));
+            itemIdList.add(itemEntity.getItemId());   
+          }       
+        }
+        List<MenuEntity> menuEntities= menuRepository.findMenusByItemsItemIdIn(itemIdList).get();
+        for(MenuEntity menuEntity : menuEntities) {
+          String restaurantId = menuEntity.getRestaurantId();
+          RestaurantEntity restaurantEntity = restaurantRepository.findRestaurantByRestaurantId(restaurantId).get();
+          if (isOpenNow(currentTime, restaurantEntity)) {
+         
+            if (isRestaurantCloseByAndOpen(restaurantEntity, currentTime, 
+                latitude, longitude, servingRadiusInKms)) {
+      
+              restaurants.add(modelMapper.map(restaurantEntity, Restaurant.class));
+            }
+          }
+        }
+
+        
+         return restaurants;
+  }
+
+  // TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+  // Objective:
+  // Find restaurants which serve food items whose attributes intersect with the search query.
+  @Override
+  public List<Restaurant> findRestaurantsByItemAttributes(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
+        List<Restaurant> restaurants = new ArrayList<>();
+        ModelMapper modelMapper =  modelMapperProvider.get();
+        List<String> itemIdList = new ArrayList<String>();
+            
+        List<ItemEntity> itemEntities  =  itemRepository.findAll();
+        for (ItemEntity  itemEntity :  itemEntities) {
+          List<String> attributes = itemEntity.getAttributes();
+          for(String attribute : attributes) {
+            if(attribute.contains(searchString)) {
+              itemIdList.add(itemEntity.getItemId());
+            }
+          }   
+        }
+        List<MenuEntity> menuEntities= menuRepository.findMenusByItemsItemIdIn(itemIdList).get();
+        for(MenuEntity menuEntity : menuEntities) {
+          String restaurantId = menuEntity.getRestaurantId();
+          RestaurantEntity restaurantEntity = restaurantRepository.findRestaurantByRestaurantId(restaurantId).get();
+          if (isOpenNow(currentTime, restaurantEntity)) {
+         
+            if (isRestaurantCloseByAndOpen(restaurantEntity, currentTime, 
+                latitude, longitude, servingRadiusInKms)) {
+      
+              restaurants.add(modelMapper.map(restaurantEntity, Restaurant.class));
+            }
+          }
+        }
+
+        
+         return restaurants;
   }
 
 

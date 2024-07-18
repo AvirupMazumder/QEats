@@ -35,7 +35,7 @@ public class RestaurantServiceImpl implements RestaurantService {
   
   private final Double normalHoursServingRadiusInKms = 5.0;
 
-  
+
   private RestaurantRepositoryService restaurantRepositoryService;
 
   @Autowired
@@ -63,8 +63,9 @@ public class RestaurantServiceImpl implements RestaurantService {
       long startTimeInMillis = System.currentTimeMillis();
       getRestaurantsResponse = 
       new GetRestaurantsResponse(restaurantRepositoryService.findAllRestaurantsCloseBy(
-      getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
-      currentTime, peakHoursServingRadiusInKms));
+        getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(),
+        currentTime, peakHoursServingRadiusInKms));
+
       long endTimeInMillis = System.currentTimeMillis();
 
       log.info("Your function took :" + (endTimeInMillis - startTimeInMillis));
@@ -73,12 +74,55 @@ public class RestaurantServiceImpl implements RestaurantService {
       new GetRestaurantsResponse(restaurantRepositoryService.findAllRestaurantsCloseBy(
          getRestaurantsRequest.getLatitude(),getRestaurantsRequest.getLongitude(), 
          currentTime, normalHoursServingRadiusInKms));
+      }
+      return getRestaurantsResponse;
     }
 
     //getRestaurantsResponse.removeNonASCIICharacters();
-    return getRestaurantsResponse;
-  }
+    
 
+  
+
+
+
+
+
+
+  // TODO: CRIO_TASK_MODULE_RESTAURANTSEARCH
+  // Implement findRestaurantsBySearchQuery. The request object has the search string.
+  // We have to combine results from multiple sources:
+  // 1. Restaurants by name (exact and inexact)
+  // 2. Restaurants by cuisines (also called attributes)
+  // 3. Restaurants by food items it serves
+  // 4. Restaurants by food item attributes (spicy, sweet, etc)
+  // Remember, a restaurant must be present only once in the resulting list.
+  // Check RestaurantService.java file for the interface contract.
+  @Override
+  public GetRestaurantsResponse findRestaurantsBySearchQuery(GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
+    log.info("Fetching restaurant details searched for: " + getRestaurantsRequest.getSearchFor());
+    GetRestaurantsResponse getRestaurantsResponse = null;
+    List<Restaurant> restaurants = new ArrayList<>();
+    if ((currentTime.isAfter(LocalTime.of(7, 59, 59)) 
+        && currentTime.isBefore(LocalTime.of(10, 00, 01)))
+        || (currentTime.isAfter(LocalTime.of(12, 59, 59)) 
+        && currentTime.isBefore(LocalTime.of(14, 00, 01)))
+        || (currentTime.isAfter(LocalTime.of(18, 59, 59)) 
+        && currentTime.isBefore(LocalTime.of(21, 00, 01)))) {
+
+      restaurants.addAll(restaurantRepositoryService.findRestaurantsByAttributes(getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), currentTime, peakHoursServingRadiusInKms));
+      restaurants.addAll(restaurantRepositoryService.findRestaurantsByItemAttributes(getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), currentTime, peakHoursServingRadiusInKms));
+      restaurants.addAll(restaurantRepositoryService.findRestaurantsByName(getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), currentTime, peakHoursServingRadiusInKms));
+      restaurants.addAll(restaurantRepositoryService.findRestaurantsByItemName(getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), currentTime, peakHoursServingRadiusInKms));
+      getRestaurantsResponse = new GetRestaurantsResponse(restaurants);
+    } else {
+      restaurants.addAll(restaurantRepositoryService.findRestaurantsByAttributes(getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), currentTime, normalHoursServingRadiusInKms));
+      restaurants.addAll(restaurantRepositoryService.findRestaurantsByItemAttributes(getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), currentTime, normalHoursServingRadiusInKms));
+      restaurants.addAll(restaurantRepositoryService.findRestaurantsByName(getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), currentTime, normalHoursServingRadiusInKms));
+      restaurants.addAll(restaurantRepositoryService.findRestaurantsByItemName(getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), currentTime, normalHoursServingRadiusInKms));
+      getRestaurantsResponse = new GetRestaurantsResponse(restaurants);
+    }
+     return getRestaurantsResponse;
+  }
 
 }
 

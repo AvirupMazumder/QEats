@@ -103,7 +103,7 @@ public class RedisConfiguration {
       jedisPool.getResource().flushAll();
       jedisPool.destroy();
       jedisPool = null;
-}
-}
+    }
+  }
 
 }

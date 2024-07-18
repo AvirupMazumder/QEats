@@ -65,7 +65,7 @@ subprojects {
     apply plugin: "jacoco"
 
     checkstyleTest.enabled = false
-    checkstyleMain.enabled = false
+    //checkstyleMain.enabled = false
 
     configurations {
         compileOnly {

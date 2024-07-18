@@ -54,9 +54,13 @@ public class RestaurantController {
 
     //CHECKSTYLE:OFF
     try {
-      getRestaurantsResponse = restaurantService
-              .findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
-      
+      if(getRestaurantsRequest.getSearchFor() != null) {
+        getRestaurantsResponse = restaurantService
+                .findRestaurantsBySearchQuery(getRestaurantsRequest, LocalTime.now());
+      } else {
+        getRestaurantsResponse = restaurantService
+                .findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
+      }
       log.info("getRestaurants returned {}", getRestaurantsResponse);
       //CHECKSTYLE:ON
       
