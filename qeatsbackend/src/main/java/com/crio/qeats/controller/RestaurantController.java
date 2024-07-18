@@ -54,7 +54,7 @@ public class RestaurantController {
 
     //CHECKSTYLE:OFF
     try {
-      if(getRestaurantsRequest.getSearchFor() != null) {
+      if(getRestaurantsRequest.getSearchFor() != null && !getRestaurantsRequest.getSearchFor().isEmpty()) {
         getRestaurantsResponse = restaurantService
                 .findRestaurantsBySearchQuery(getRestaurantsRequest, LocalTime.now());
       } else {
