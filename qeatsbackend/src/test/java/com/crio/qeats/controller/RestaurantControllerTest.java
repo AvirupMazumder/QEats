@@ -33,7 +33,6 @@ import com.crio.qeats.QEatsApplication;
 import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.services.RestaurantService;
-import com.crio.qeats.services.RestaurantServiceImpl;
 import com.crio.qeats.utils.FixtureHelpers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,11 +45,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -74,6 +71,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @ActiveProfiles("test")
 public class RestaurantControllerTest {
 
+  //FIXME: REVIEW the api names
   private static final String RESTAURANT_API_URI = RESTAURANT_API_ENDPOINT + RESTAURANTS_API;
   private static final String MENU_API_URI = RESTAURANT_API_ENDPOINT + MENU_API;
   private static final String CART_API_URI = RESTAURANT_API_ENDPOINT + CART_API;
@@ -85,7 +83,6 @@ public class RestaurantControllerTest {
   private static final String FIXTURES = "fixtures/exchanges";
   private ObjectMapper objectMapper;
 
-  
   private MockMvc mvc;
 
   @MockBean
@@ -112,9 +109,7 @@ public class RestaurantControllerTest {
     when(restaurantService
         .findAllRestaurantsCloseBy(any(GetRestaurantsRequest.class), any(LocalTime.class)))
         .thenReturn(sampleResponse);
-    when(restaurantService
-        .findRestaurantsBySearchQuery(any(GetRestaurantsRequest.class), any(LocalTime.class)))
-        .thenReturn(sampleResponse);
+    
 
     ArgumentCaptor<GetRestaurantsRequest> argumentCaptor = ArgumentCaptor
         .forClass(GetRestaurantsRequest.class);
@@ -145,24 +140,17 @@ public class RestaurantControllerTest {
   @Test
   public void getRestaurantsBySearchStringAndLatLong() throws Exception {
     GetRestaurantsResponse sampleResponse = loadSampleResponseList();
+    // System.out.println(sampleResponse==null);
     assertNotNull(sampleResponse);
 
-    when(restaurantService
-        .findRestaurantsBySearchQuery(any(GetRestaurantsRequest.class), any(LocalTime.class)))
-        .thenReturn(sampleResponse);
+    when(restaurantService.findAllRestaurantsCloseBy(any(GetRestaurantsRequest.class), any(LocalTime.class))).thenReturn(sampleResponse);
 
-    ArgumentCaptor<GetRestaurantsRequest> argumentCaptor = ArgumentCaptor
-        .forClass(GetRestaurantsRequest.class);
+    ArgumentCaptor<GetRestaurantsRequest> argumentCaptor = ArgumentCaptor.forClass(GetRestaurantsRequest.class);
 
-    URI uri = UriComponentsBuilder
-        .fromPath(RESTAURANT_API_URI)
-        .queryParam("latitude", "20.21")
-        .queryParam("longitude", "30.31")
-        .queryParam("searchFor", "Briyani")
-        .build().toUri();
-
-    assertEquals(RESTAURANT_API_URI + "?latitude=20.21&longitude=30.31&searchFor=Briyani",
-        uri.toString());
+    URI uri = UriComponentsBuilder.fromPath(RESTAURANT_API_URI).queryParam("latitude", "20.21").queryParam("longitude", "30.31").queryParam("searchFor", "Briyani").build().toUri();
+    System.out.println("ursi is ->"+uri.toString());
+    System.out.println(RESTAURANT_API_URI + "?latitude=20.21&longitude=30.31&searchFor=Briyani");
+    assertEquals(RESTAURANT_API_URI + "?latitude=20.21&longitude=30.31&searchFor=Briyani",uri.toString());
 
     MockHttpServletResponse response = mvc.perform(
         get(uri.toString()).accept(APPLICATION_JSON_UTF8)
@@ -337,21 +325,22 @@ public class RestaurantControllerTest {
 
 
 
-  private GetRestaurantsResponse loadSampleResponseList() throws IOException {
-    String fixture =
-        FixtureHelpers.fixture(FIXTURES + "/list_restaurant_response.json");
-
-    return objectMapper.readValue(fixture,
+    private GetRestaurantsResponse loadSampleResponseList() throws IOException {
+        String fixture =
+        FixtureHelpers.fixture(FIXTURES +
+        "/list_restaurant_response.json");
+        return objectMapper.readValue(fixture,
         new TypeReference<GetRestaurantsResponse>() {
         });
-  }
+    }
 
-  private GetRestaurantsResponse loadSampleRequest() throws IOException {
-    String fixture =
-        FixtureHelpers.fixture(FIXTURES + "/create_restaurant_request.json");
-
-    return objectMapper.readValue(fixture, GetRestaurantsResponse.class);
-  }
+    private GetRestaurantsResponse loadSampleRequest() throws IOException {
+        String fixture =
+        FixtureHelpers.fixture(FIXTURES +
+        "/create_restaurant_request.json");
+        return objectMapper.readValue(fixture,
+        GetRestaurantsResponse.class);
+    }
 
 }
 

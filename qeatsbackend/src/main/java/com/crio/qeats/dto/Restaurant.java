@@ -8,11 +8,10 @@
 package com.crio.qeats.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 import org.springframework.stereotype.Component;
 
 
@@ -51,26 +50,26 @@ public class Restaurant {
   private String closesAt;
   private String[] attributes;
 
-  public void removeNonASCIICharacters() {
-    this.name = removeNonASCII(this.name);
+  public void removeNonAsciiCharacters() {
+    this.name = removeNonAscii(this.name);
     if (attributes != null) {
-        this.attributes = removeNonASCII(this.attributes);
+      this.attributes = removeNonAscii(this.attributes);
     }
   }
 
-  private String removeNonASCII(String str) {
+  private String removeNonAscii(String str) {
     if (str == null) {
-        return null;
+      return null;
     }
     // Remove non-ASCII characters and replace with whitespace
     return str.replaceAll("[^\\x00-\\x7F]", "?");
   }
 
-  private String[] removeNonASCII(String[] arr) {
+  private String[] removeNonAscii(String[] arr) {
     // Remove non-ASCII characters from each element in the array
     return List.of(arr)
             .stream()
-            .map(this::removeNonASCII)
+            .map(this::removeNonAscii)
             .toArray(String[]::new);
   }
     

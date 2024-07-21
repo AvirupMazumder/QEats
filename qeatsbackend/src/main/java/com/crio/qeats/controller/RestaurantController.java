@@ -9,26 +9,22 @@ package com.crio.qeats.controller;
 import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.services.RestaurantService;
-import java.net.SocketException;
 import java.time.LocalTime;
 import javax.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
 // Implement Controller using Spring annotations.
 // Remember, annotations have various "targets". They can be class level, method level or others.
-@Log4j2
 @RestController
+@Log4j2
+@RequestMapping(RestaurantController.RESTAURANT_API_ENDPOINT)
 public class RestaurantController {
 
   public static final String RESTAURANT_API_ENDPOINT = "/qeats/v1";
@@ -44,8 +40,7 @@ public class RestaurantController {
   private RestaurantService restaurantService;
 
 
-
-  @GetMapping(RESTAURANT_API_ENDPOINT + RESTAURANTS_API)
+  @GetMapping(RESTAURANTS_API)
   public ResponseEntity<GetRestaurantsResponse> getRestaurants(@Valid 
       GetRestaurantsRequest getRestaurantsRequest) {
 
@@ -54,7 +49,8 @@ public class RestaurantController {
 
     //CHECKSTYLE:OFF
     try {
-      if(getRestaurantsRequest.getSearchFor() != null && !getRestaurantsRequest.getSearchFor().isEmpty()) {
+      if (getRestaurantsRequest.getSearchFor() != null 
+          && !getRestaurantsRequest.getSearchFor().isEmpty()) {
         getRestaurantsResponse = restaurantService
                 .findRestaurantsBySearchQuery(getRestaurantsRequest, LocalTime.now());
       } else {
@@ -63,9 +59,9 @@ public class RestaurantController {
       }
       log.info("getRestaurants returned {}", getRestaurantsResponse);
       //CHECKSTYLE:ON
-      
-      getRestaurantsResponse.removeNonASCIICharacters();
-
+      if (getRestaurantsResponse != null) {
+        getRestaurantsResponse.removeNonAsciiCharacters();
+      }
       return ResponseEntity.ok().body(getRestaurantsResponse);
     } catch (Exception e) {
       log.error("Exception occurred while processing the request: {}", e.getMessage());
@@ -74,13 +70,7 @@ public class RestaurantController {
     }
       
   }
-/*
-  @GetMapping(RESTAURANT_API_ENDPOINT + RESTAURANT_API_ENDPOINT)
-  public ResponseEntity<String> startQEatsApp() {
-    log.info("Successfully logged in to QEats App");
-    return ResponseEntity.ok().body("Logged Successfully");
-  }
-  */
+
   // TIP(MODULE_MENUAPI): Model Implementation for getting menu given a restaurantId.
   // Get the Menu for the given restaurantId
   // API URI: /qeats/v1/menu?restaurantId=11

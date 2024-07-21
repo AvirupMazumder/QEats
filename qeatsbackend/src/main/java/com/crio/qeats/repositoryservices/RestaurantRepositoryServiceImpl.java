@@ -8,17 +8,13 @@ package com.crio.qeats.repositoryservices;
 
 import ch.hsr.geohash.GeoHash;
 import com.crio.qeats.configs.RedisConfiguration;
-import lombok.extern.log4j.Log4j2;
-import com.crio.qeats.dto.Item;
 import com.crio.qeats.dto.Restaurant;
-import com.crio.qeats.globals.GlobalConstants;
 import com.crio.qeats.models.ItemEntity;
 import com.crio.qeats.models.MenuEntity;
 import com.crio.qeats.models.RestaurantEntity;
 import com.crio.qeats.repositories.ItemRepository;
 import com.crio.qeats.repositories.MenuRepository;
 import com.crio.qeats.repositories.RestaurantRepository;
-import com.crio.qeats.utils.GeoLocation;
 import com.crio.qeats.utils.GeoUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -26,24 +22,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.Future;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.inject.Provider;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
@@ -88,10 +72,12 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
     // database instead.
 
     List<Restaurant> restaurants = new ArrayList<>();
-    if(redisConfiguration.isCacheAvailable()) {
-      restaurants = findAllRestaurantsCloseByFromCache(latitude, longitude, currentTime, servingRadiusInKms);
+    if (redisConfiguration.isCacheAvailable()) {
+      restaurants = findAllRestaurantsCloseByFromCache(latitude, 
+        longitude, currentTime, servingRadiusInKms);
     } else {
-      restaurants = findAllRestaurantsCloseByFromDb(latitude, longitude, currentTime, servingRadiusInKms);
+      restaurants = findAllRestaurantsCloseByFromDb(latitude, 
+        longitude, currentTime, servingRadiusInKms);
     }
     
     log.info("Resturning list of restaurants of size: {} ",restaurants.size());
@@ -103,8 +89,7 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
       Double longitude, Double servingRadiusInKms) {
 
         String geoHash = GeoHash.geoHashStringWithCharacterPrecision(latitude, longitude, 7);
-        String redisKey = geoHash;// + "|" + servingRadiusInKms;
-        ModelMapper modelMapper = modelMapperProvider.get();
+        String redisKey = geoHash;
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {

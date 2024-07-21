@@ -63,11 +63,11 @@ public class GetRestaurantsResponse {
     this.restaurants = restraurants;
   }
 
-  public void removeNonASCIICharacters() {
+  public void removeNonAsciiCharacters() {
     if (restaurants != null) {
-        for (Restaurant restaurant : restaurants) {
-            restaurant.removeNonASCIICharacters();
-        }
+      for (Restaurant restaurant : restaurants) {
+        restaurant.removeNonAsciiCharacters();
+      }
     }
   }
 }
