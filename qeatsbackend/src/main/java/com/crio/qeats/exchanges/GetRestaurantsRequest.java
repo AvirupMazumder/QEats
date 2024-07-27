@@ -15,13 +15,6 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-// TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
-//  Implement GetRestaurantsRequest.
-//  Complete the class such that it is able to deserialize the incoming query params from
-//  REST API clients.
-//  For instance, if a REST client calls API
-//  /qeats/v1/restaurants?latitude=28.4900591&longitude=77.536386&searchFor=tamil,
-//  this class should be able to deserialize lat/long and optional searchFor from that.
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

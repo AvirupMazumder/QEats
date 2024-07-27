@@ -7,6 +7,7 @@
 
 package com.crio.qeats.services;
 
+import com.crio.qeats.configs.AsyncConfiguration;
 import com.crio.qeats.dto.Restaurant;
 import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
@@ -21,18 +22,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
 @Log4j2
-public class RestaurantServiceImpl implements RestaurantService {
+public class RestaurantServiceImpl extends Thread implements RestaurantService {
 
   private final Double peakHoursServingRadiusInKms = 3.0;
   private final Double normalHoursServingRadiusInKms = 5.0;
   @Autowired
   private RestaurantRepositoryService restaurantRepositoryService;
+
+  @Autowired
+  private AsyncConfiguration asyncConfiguration;
 
 
   // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI - Implement findAllRestaurantsCloseby.
@@ -185,6 +191,46 @@ public class RestaurantServiceImpl implements RestaurantService {
      return getRestaurantsResponse;
   }
   
+  // TODO: CRIO_TASK_MODULE_MULTITHREADING
+  // Implement multi-threaded version of RestaurantSearch.
+  // Implement variant of findRestaurantsBySearchQuery which is at least 1.5x time faster than
+  // findRestaurantsBySearchQuery.
+  @Override
+  public GetRestaurantsResponse findRestaurantsBySearchQueryMt(
+      GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
+     ThreadPoolTaskExecutor taskExecutor = (ThreadPoolTaskExecutor) asyncConfiguration.taskExecutor();
+     List<Future<List<Restaurant>>> futures = new ArrayList<>();
+    List<Restaurant> restaurants = new ArrayList<>();
+
+     futures.add(taskExecutor.submit(() -> restaurantRepositoryService.findRestaurantsByName(getRestaurantsRequest.getLatitude(), 
+        getRestaurantsRequest.getLongitude(), 
+        getRestaurantsRequest.getSearchFor(), 
+        currentTime, normalHoursServingRadiusInKms)));
+     futures.add(taskExecutor.submit(() -> restaurantRepositoryService.findRestaurantsByAttributes(getRestaurantsRequest.getLatitude(),
+        getRestaurantsRequest.getLongitude(), 
+        getRestaurantsRequest.getSearchFor(), 
+        currentTime, normalHoursServingRadiusInKms)));
+     futures.add(taskExecutor.submit(() -> restaurantRepositoryService.findRestaurantsByItemAttributes(getRestaurantsRequest.getLatitude(), 
+        getRestaurantsRequest.getLongitude(), 
+        getRestaurantsRequest.getSearchFor(), 
+        currentTime, normalHoursServingRadiusInKms)));
+     futures.add(taskExecutor.submit(() -> restaurantRepositoryService.findRestaurantsByItemName(getRestaurantsRequest.getLatitude(), 
+       getRestaurantsRequest.getLongitude(), 
+       getRestaurantsRequest.getSearchFor(), 
+       currentTime, normalHoursServingRadiusInKms)));
+       for (Future<List<Restaurant>> future : futures) {
+        try {
+            List<Restaurant> restaurant = future.get(); // this will block until the result is available
+            if (restaurant != null) {
+                restaurants.addAll(restaurant);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return new GetRestaurantsResponse(restaurants);
+  }
 
 }
 
