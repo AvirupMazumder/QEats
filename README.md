@@ -12,3 +12,5 @@ During the course of this project, the following features and improvements were 
 - Integrated an advanced search feature to improve user experience and discoverability.
 
 This project showcases expertise in backend development, API design, performance optimization, and feature enhancements for a high-traffic food ordering application.
+
+<img src="qeats-backend-architecture.png" alt="QEats Backend Architecture" width="500">
